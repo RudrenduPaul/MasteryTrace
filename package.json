@@ -1,0 +1,63 @@
+{
+  "name": "masterytrace-cli",
+  "version": "0.1.0",
+  "description": "Mastery Measurement API and CLI: fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates.",
+  "keywords": [
+    "bkt",
+    "irt",
+    "bayesian-knowledge-tracing",
+    "item-response-theory",
+    "education",
+    "edtech",
+    "learning-analytics",
+    "psychometrics",
+    "cli",
+    "agent-native"
+  ],
+  "homepage": "https://github.com/RudrenduPaul/MasteryTrace#readme",
+  "bugs": {
+    "url": "https://github.com/RudrenduPaul/MasteryTrace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RudrenduPaul/MasteryTrace.git"
+  },
+  "license": "MIT",
+  "author": "Rudrendu Paul",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "masterytrace": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:coverage": "npm run build && vitest run --coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^10.7.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^4.1.10"
+  }
+}

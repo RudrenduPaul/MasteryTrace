@@ -1,0 +1,6 @@
+node_modules/
+dist/
+coverage/
+.masterytrace/
+*.log
+.DS_Store

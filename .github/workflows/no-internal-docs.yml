@@ -1,0 +1,36 @@
+name: No internal docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Forbidden internal-process filenames
+        run: |
+          hits=$(find . -type f \( \
+            -iname 'CLAUDE.md' -o \
+            -iname 'TODOS.md' -o \
+            -iname 'BRANCH_PROTECTION.md' \
+            \) -not -path './node_modules/*')
+          if [ -n "$hits" ]; then
+            echo "Forbidden internal-process file(s) found:"
+            echo "$hits"
+            exit 1
+          fi
+
+      - name: Internal-process language in tracked files
+        run: |
+          pattern='CEO review|office.?hours|eng.?review|devex review|CSO review|CSO threat.?model|/oss-[0-9]+-[a-z-]+|/plan-eng-review|/review finding|Reviewer Concern|viability score|WOUNDED|cherry-pick flag|fundrais|investor.?outreach|Show HN draft|hype.?seed|gstack'
+          if git grep -inE "$pattern" -- . ':!node_modules' ':!.github/workflows/no-internal-docs.yml'; then
+            echo "Internal-process language found in tracked files (see matches above)."
+            exit 1
+          fi

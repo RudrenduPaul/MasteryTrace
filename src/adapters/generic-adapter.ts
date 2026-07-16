@@ -27,9 +27,22 @@ function assertReadableRegularFile(path: string): void {
 
 const CSV_COLUMNS = ['learner_id', 'skill_id', 'correct', 'timestamp'] as const;
 
-function parseCsvBoolean(raw: string): boolean {
+/**
+ * Parses a CSV `correct` cell into a boolean. Only recognizes `true`/`false`
+ * and `1`/`0` (case-insensitive, trimmed); anything else is returned as the
+ * original raw string rather than silently guessed. That matters: coercing
+ * every unrecognized value to `false` (as e.g. `Boolean(raw)`-style logic
+ * effectively would) would make a typo, an empty cell from a shifted column,
+ * or a "yes"/"no" export format silently record as an incorrect response
+ * instead of surfacing as bad data. Returning the raw string instead lets
+ * it fail ResponseEventSchema's `correct` boolean check with a clear,
+ * row-numbered validation error, exactly like malformed JSON input does.
+ */
+function parseCsvBoolean(raw: string): boolean | string {
   const normalized = raw.trim().toLowerCase();
-  return normalized === 'true' || normalized === '1';
+  if (normalized === 'true' || normalized === '1') return true;
+  if (normalized === 'false' || normalized === '0') return false;
+  return raw;
 }
 
 /**

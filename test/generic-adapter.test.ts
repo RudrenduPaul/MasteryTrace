@@ -45,6 +45,17 @@ describe('parseCsv', () => {
       /missing required column/i,
     );
   });
+
+  it('does not silently coerce an unrecognized "correct" value to false', () => {
+    // Regression test: a garbage/typo'd correct cell (or an empty cell from
+    // a shifted column) used to be silently interpreted as `false` instead
+    // of surfacing as bad data. It must now come out as the original raw
+    // string so schema validation rejects it explicitly.
+    const csv = 'learner_id,skill_id,correct,timestamp\nl1,s1,maybe,2026-01-01T00:00:00Z\n';
+    const rows = parseCsv(csv) as { correct: unknown }[];
+    expect(rows[0]?.correct).toBe('maybe');
+    expect(rows[0]?.correct).not.toBe(false);
+  });
 });
 
 describe('genericAdapter', () => {
@@ -91,6 +102,12 @@ describe('genericAdapter', () => {
   it('throws EventValidationError for malformed CSV event data', () => {
     const path = join(dir, 'bad.csv');
     writeFileSync(path, 'learner_id,skill_id,correct,timestamp\nl1,s1,notabool,not-a-date\n');
+    expect(() => genericAdapter.load(path)).toThrow(EventValidationError);
+  });
+
+  it('throws EventValidationError for a CSV row with an unrecognized "correct" value, even with an otherwise-valid timestamp', () => {
+    const path = join(dir, 'bad-correct.csv');
+    writeFileSync(path, 'learner_id,skill_id,correct,timestamp\nl1,s1,maybe,2026-01-01T00:00:00Z\n');
     expect(() => genericAdapter.load(path)).toThrow(EventValidationError);
   });
 

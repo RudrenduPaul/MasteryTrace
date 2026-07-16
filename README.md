@@ -51,7 +51,7 @@ learner-cyrus  reading-comprehension  bkt    posterior_mastery_probability  0.99
 
 `report` also takes `--format markdown` or `--format json`, and every command accepts a global `--json` flag for machine-readable output on stdout, with a real exit code contract (`0` success, `1` general/usage error, `2` bad event data) so a script or agent invoking this CLI can branch on the result without parsing text.
 
-Your own event log is a JSON array of `{ learnerId, skillId, correct, timestamp }` objects, or a CSV with header `learner_id,skill_id,correct,timestamp`. `timestamp` must be ISO 8601; `correct` is a boolean (JSON) or `true`/`false`/`1`/`0` (CSV).
+Your own event log is a JSON array of `{ learnerId, skillId, correct, timestamp }` objects, or a CSV with header `learner_id,skill_id,correct,timestamp`. `timestamp` must be ISO 8601; `correct` is a boolean (JSON) or `true`/`false`/`1`/`0` (CSV), and any other value in a CSV `correct` cell is rejected as a validation error rather than silently treated as false. Event log files over 100 MB are rejected up front with a clear error; event logs are small structured records and have no legitimate reason to approach that size.
 
 ## CLI command reference
 

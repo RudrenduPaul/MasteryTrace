@@ -54,23 +54,36 @@ export interface BktFittedModel extends FittedModel {
   results: BktSkillResult[];
 }
 
-// A control character that will never legitimately appear in a learnerId or
-// skillId, used to join/split the composite grouping key safely.
-const LEARNER_SKILL_SEP = '\u0000';
-
-function groupByLearnerSkill(events: ResponseEvent[]): Map<string, ResponseEvent[]> {
-  const groups = new Map<string, ResponseEvent[]>();
+/**
+ * Groups events by learnerId, then by skillId, sorting each learner+skill's
+ * events into chronological order. Nested Maps (rather than a joined string
+ * key such as learnerId + separator + skillId) are used deliberately:
+ * learnerId and skillId are arbitrary user-supplied strings with no
+ * character restrictions, so any chosen separator could in principle also
+ * appear inside an id and corrupt the grouping (two different learner/skill
+ * pairs colliding onto the same composite key, or one id's embedded
+ * separator silently splitting it into extra parts). Nesting sidesteps
+ * that entirely.
+ */
+function groupByLearnerSkill(events: ResponseEvent[]): Map<string, Map<string, ResponseEvent[]>> {
+  const groups = new Map<string, Map<string, ResponseEvent[]>>();
   for (const event of events) {
-    const key = `${event.learnerId}${LEARNER_SKILL_SEP}${event.skillId}`;
-    const list = groups.get(key);
+    let bySkill = groups.get(event.learnerId);
+    if (!bySkill) {
+      bySkill = new Map();
+      groups.set(event.learnerId, bySkill);
+    }
+    const list = bySkill.get(event.skillId);
     if (list) {
       list.push(event);
     } else {
-      groups.set(key, [event]);
+      bySkill.set(event.skillId, [event]);
     }
   }
-  for (const list of groups.values()) {
-    list.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+  for (const bySkill of groups.values()) {
+    for (const list of bySkill.values()) {
+      list.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+    }
   }
   return groups;
 }
@@ -213,9 +226,9 @@ export class BktModel implements ScoringModel<BktFittedModel> {
         params[skillId] = { ...BKT_DEFAULT_PARAMS, ...this.config.defaultParams, ...override };
       } else if (this.config.fit) {
         const sequences: boolean[][] = [];
-        const suffix = `${LEARNER_SKILL_SEP}${skillId}`;
-        for (const [key, list] of byLearnerSkill.entries()) {
-          if (key.endsWith(suffix)) {
+        for (const bySkillForLearner of byLearnerSkill.values()) {
+          const list = bySkillForLearner.get(skillId);
+          if (list) {
             sequences.push(list.map((e) => e.correct));
           }
         }
@@ -226,20 +239,21 @@ export class BktModel implements ScoringModel<BktFittedModel> {
     }
 
     const results: BktSkillResult[] = [];
-    for (const [key, list] of byLearnerSkill.entries()) {
-      const [learnerId, skillId] = key.split(LEARNER_SKILL_SEP) as [string, string];
-      const skillParams = params[skillId] ?? BKT_DEFAULT_PARAMS;
-      const posteriorHistory = runForwardRecursion(
-        list.map((e) => e.correct),
-        skillParams,
-      );
-      results.push({
-        learnerId,
-        skillId,
-        posteriorHistory,
-        finalMastery: posteriorHistory[posteriorHistory.length - 1] ?? skillParams.pInit,
-        responseCount: list.length,
-      });
+    for (const [learnerId, bySkillForLearner] of byLearnerSkill.entries()) {
+      for (const [skillId, list] of bySkillForLearner.entries()) {
+        const skillParams = params[skillId] ?? BKT_DEFAULT_PARAMS;
+        const posteriorHistory = runForwardRecursion(
+          list.map((e) => e.correct),
+          skillParams,
+        );
+        results.push({
+          learnerId,
+          skillId,
+          posteriorHistory,
+          finalMastery: posteriorHistory[posteriorHistory.length - 1] ?? skillParams.pInit,
+          responseCount: list.length,
+        });
+      }
     }
 
     return { modelName: 'bkt', params, results };

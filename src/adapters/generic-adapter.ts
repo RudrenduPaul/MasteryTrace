@@ -13,6 +13,15 @@ export interface EventAdapter {
   load(path: string): ResponseEvent[];
 }
 
+// Event logs are small structured records (a handful of fields per response
+// event); there is no legitimate reason for one to approach this size. This
+// guard exists for the case where masterytrace is invoked programmatically
+// (e.g. by another agent/tool) on a file it did not choose itself: without
+// it, an oversized file is read fully into memory and handed to JSON.parse
+// before any validation runs, which can exhaust memory or hang the process
+// well before the "not valid event data" error a bad file should produce.
+export const MAX_EVENT_LOG_BYTES = 100 * 1024 * 1024; // 100 MB
+
 function assertReadableRegularFile(path: string): void {
   // lstat (not stat) never follows a symlink, so a symlink at `path` is
   // caught here even if its target is a regular file elsewhere on disk.
@@ -22,6 +31,13 @@ function assertReadableRegularFile(path: string): void {
   }
   if (!stats.isFile()) {
     throw new Error(`Refusing to read '${path}': not a regular file.`);
+  }
+  if (stats.size > MAX_EVENT_LOG_BYTES) {
+    const sizeMb = (stats.size / (1024 * 1024)).toFixed(1);
+    const limitMb = (MAX_EVENT_LOG_BYTES / (1024 * 1024)).toFixed(0);
+    throw new Error(
+      `Refusing to read '${path}': file is ${sizeMb} MB, which exceeds the ${limitMb} MB event log size limit.`,
+    );
   }
 }
 

@@ -1,8 +1,8 @@
-import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { closeSync, ftruncateSync, mkdtempSync, openSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { genericAdapter, parseCsv } from '../src/adapters/generic-adapter.js';
+import { genericAdapter, MAX_EVENT_LOG_BYTES, parseCsv } from '../src/adapters/generic-adapter.js';
 import { EventValidationError } from '../src/core/event-schema.js';
 
 describe('parseCsv', () => {
@@ -109,6 +109,17 @@ describe('genericAdapter', () => {
     const path = join(dir, 'bad-correct.csv');
     writeFileSync(path, 'learner_id,skill_id,correct,timestamp\nl1,s1,maybe,2026-01-01T00:00:00Z\n');
     expect(() => genericAdapter.load(path)).toThrow(EventValidationError);
+  });
+
+  it('refuses to read a file larger than the event log size limit', () => {
+    // Sparse file: ftruncate extends the file to the given length without
+    // actually writing that many bytes to disk, so this stays fast and
+    // does not need real gigabyte-scale I/O to exercise the guard.
+    const path = join(dir, 'huge.json');
+    const fd = openSync(path, 'w');
+    ftruncateSync(fd, MAX_EVENT_LOG_BYTES + 1);
+    closeSync(fd);
+    expect(() => genericAdapter.load(path)).toThrow(/exceeds the .* MB event log size limit/i);
   });
 
   it('refuses to read a symlinked path', () => {

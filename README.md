@@ -1,6 +1,27 @@
+<div align="center">
+
 # MasteryTrace
 
 MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
+
+[![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
+
+</div>
+
+## Table of Contents
+
+- [Install](#install)
+- [Quickstart](#quickstart)
+- [CLI command reference](#cli-command-reference)
+- [Library API reference](#library-api-reference)
+- [How BKT and IRT work](#how-bkt-and-irt-work)
+- [Benchmark](#benchmark)
+- [Comparison](#comparison)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Install
 
@@ -176,6 +197,10 @@ MasteryTrace's own niche is being a CLI and a TypeScript library at once, with n
 pyBKT (from UC Berkeley's CAHLR lab) is the most established BKT implementation and supports more BKT variants (forgetting, item-order effects) than MasteryTrace's single textbook-plus-grid-search model. girth and py-irt are both IRT libraries; py-irt is the heavier of the two, built on PyTorch and Pyro for GPU-accelerated fitting of larger IRT models (1PL/2PL/4PL) and ships its own CLI, while girth is a lighter pure-Python option closer in spirit to MasteryTrace's regularized-gradient-ascent 2PL implementation. None of the three is a Node.js package or ships a general-purpose CLI in the same shape as `masterytrace score`/`report`.
 
 DeepTutor is not a competing measurement library. It is a large, actively developed open-source AI tutoring platform (agent orchestration, tutoring workspaces, memory) that, by its own README, does not implement BKT or IRT itself. It is a plausible integration target: DeepTutor could log response events and hand them to MasteryTrace for the actual mastery estimation it does not otherwise do.
+
+## What Is MasteryTrace, and Why Does It Exist
+
+MasteryTrace is an open source TypeScript CLI and library that fits Bayesian Knowledge Tracing and Item Response Theory models to a log of learner response events, then reports calibrated mastery estimates per learner and per skill. It exists because most open source AI tutoring agents are built to hold a conversation and adapt a lesson, not to measure what a learner has actually mastered, while the two psychometric models that do that job rigorously live almost entirely in Python libraries with no equivalent for a Node or TypeScript stack and no CLI a non-Python tool can shell out to. MasteryTrace fills that specific gap: point it at a JSON or CSV event log, get a mastery probability (BKT) and an ability estimate (IRT) back, in a format any script, tutoring product, or agent can parse.
 
 ## FAQ
 

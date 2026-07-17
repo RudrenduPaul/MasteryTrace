@@ -25,15 +25,56 @@ MasteryTrace is a TypeScript CLI and library that turns a log of learner respons
 
 ## Install
 
+MasteryTrace ships as two independent, equally first-class packages that
+implement the same two models (BKT, 2PL IRT) and the same CLI contract.
+
+**npm (TypeScript CLI + library)**: **not yet published to the npm
+registry.** This is a deliberate decision by the maintainer, unrelated to
+the code's readiness -- the TypeScript source in this repo passes CI and
+builds cleanly (`npm run build`). Until it is published, run it from
+source:
+
 ```bash
-npm install -g masterytrace-cli
+git clone https://github.com/RudrenduPaul/MasteryTrace.git
+cd MasteryTrace
+npm install
+npm run build
+node dist/cli/index.js --help
 ```
 
-This installs a `masterytrace` binary on your PATH. If you'd rather use it as a library in a Node project, `npm install masterytrace-cli` and import from `masterytrace-cli` (see the [library API reference](#library-api-reference) below).
-
-Verified for this release: `npm pack`, installing the resulting tarball into a clean directory with `npm install ./masterytrace-cli-0.1.0.tgz`, and running the installed `masterytrace` binary end to end (`--version`, `--help`, and the full `init` -> `record` -> `score` -> `report` flow below).
+Verified for this release: `npm pack`, installing the resulting tarball
+into a clean directory with `npm install ./masterytrace-cli-0.1.0.tgz`,
+and running the installed `masterytrace` binary end to end (`--version`,
+`--help`, and the full `init` -> `record` -> `score` -> `report` flow
+below) -- the package itself is publish-ready even though it has not
+been pushed to the registry.
 
 Requires Node.js 18 or later.
+
+**pip (Python CLI + library)**: a full, independent Python port of this
+repo's TypeScript source lives in `python/` -- same two models, same CLI
+contract, its own 75-test pytest suite, built and verified end to end
+from a real wheel install. Publishing it to PyPI as `masterytrace-cli`
+is in progress: PyPI's account-level new-project rate limit
+(`429 Too many new projects created`) held up the first publish attempt
+for this specific package name; that is a platform-side anti-abuse
+throttle unrelated to the code or to any account security issue, and the
+package will go live as `pip install masterytrace-cli` once it clears.
+Until then, install from source:
+
+```bash
+git clone https://github.com/RudrenduPaul/MasteryTrace.git
+cd MasteryTrace/python
+pip install -e .
+```
+
+This installs the same four subcommands (`init`, `record`, `score`,
+`report`) as a `masterytrace` console script, plus an importable
+`masterytrace` library -- a genuine, independent port of this repo's
+TypeScript source, not a wrapper around the Node binary. See
+[python/README.md](./python/README.md) for Python-specific usage,
+including a documented `camelCase`/`snake_case` naming divergence
+between the two distributions' JSON output.
 
 ## Quickstart
 
@@ -188,7 +229,7 @@ MasteryTrace's own niche is being a CLI and a TypeScript library at once, with n
 
 | Project | Language | License | Type | Install | GitHub stars |
 | --- | --- | --- | --- | --- | --- |
-| **MasteryTrace** | TypeScript/Node | MIT | CLI + library | `npm install -g masterytrace-cli` | New |
+| **MasteryTrace** | TypeScript/Node + Python | MIT | CLI + library | `pip install -e python/` from source today; PyPI/npm publishing in progress | New |
 | [pyBKT](https://github.com/CAHLR/pyBKT) | Python (C++ core) | MIT | Library only | `pip install pyBKT` | 268 |
 | [girth](https://github.com/eribean/girth) | Python | MIT | Library only | `pip install girth` | 123 |
 | [py-irt](https://github.com/nd-ball/py-irt) | Python (PyTorch/Pyro) | MIT | CLI + library | `pip install py-irt` | 170 |
@@ -204,7 +245,7 @@ MasteryTrace is an open source TypeScript CLI and library that fits Bayesian Kno
 
 ## FAQ
 
-**Why not just use pyBKT or py-irt?** If you're already in a Python data science stack and want more BKT variants or GPU-scale IRT fitting, those are good choices, and MasteryTrace's comparison table above says so directly. MasteryTrace exists for the case where you want mastery scoring in a Node/TypeScript codebase, or as a CLI you can drop into any pipeline (including one driven by an agent) without a Python environment.
+**Why not just use pyBKT or py-irt?** If you want more BKT variants (forgetting, item-order effects) or GPU-scale IRT fitting, those are good choices, and MasteryTrace's comparison table above says so directly. MasteryTrace's Python package (`pip install masterytrace-cli`) covers the same simple textbook-BKT-plus-grid-search and regularized-2PL-IRT models this repo implements, for a Python-only pipeline; the TypeScript package (once published) additionally covers the case where you want mastery scoring in a Node codebase with no Python runtime at all.
 
 **Does this need a database?** No. State is two JSON files in a `.masterytrace/` directory next to where you run the CLI (`events.json` and `scores.json`). There's no server and no external dependency to run.
 
@@ -216,7 +257,10 @@ MasteryTrace is an open source TypeScript CLI and library that fits Bayesian Kno
 
 ## Contributing
 
-Issues and pull requests are welcome. Before submitting a change:
+Issues and pull requests are welcome, for either the TypeScript codebase
+(repo root) or the Python codebase (`python/`). See
+[CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide. TypeScript
+quickstart:
 
 ```bash
 npm install
@@ -225,7 +269,7 @@ npm run typecheck
 npm run test:coverage
 ```
 
-The project keeps 100% statement/line/function coverage and a clean `eslint`/`tsc`/`npm audit`; a change that drops any of those is unlikely to be merged as is.
+The project keeps 100% statement/line/function coverage and a clean `eslint`/`tsc`/`npm audit`; a change that drops any of those is unlikely to be merged as is. Python quickstart in [python/README.md](./python/README.md#contributing).
 
 ## License
 

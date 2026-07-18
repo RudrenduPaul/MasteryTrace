@@ -21,6 +21,9 @@ jobs:
             -iname 'TODOS.md' -o \
             -iname 'BRANCH_PROTECTION.md' \
             \) -not -path './node_modules/*')
+          hits="$hits
+          $(find . -type f -path '*/docs/security-review-*.md' -not -path './node_modules/*')"
+          hits=$(echo "$hits" | sed '/^$/d')
           if [ -n "$hits" ]; then
             echo "Forbidden internal-process file(s) found:"
             echo "$hits"

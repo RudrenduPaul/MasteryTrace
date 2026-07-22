@@ -7,13 +7,8 @@ logs and reports per-learner, per-skill mastery estimates.
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RudrenduPaul/MasteryTrace/blob/main/LICENSE)
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
 
-**PyPI status**: publishing this package as `masterytrace-cli` is in
-progress. The first publish attempt hit PyPI's account-level
-`429 Too many new projects created` anti-abuse rate limit -- a
-platform-side throttle on new package names, unrelated to this code or
-to any account security issue -- so `pip install masterytrace-cli` is not
-live yet. The PyPI version/Python-versions badges above will be restored
-once the package is live; install from source below in the meantime.
+**PyPI status**: `masterytrace-cli` is published and live on PyPI --
+`pip install masterytrace-cli` works today.
 
 ## Why this exists
 
@@ -31,8 +26,6 @@ wrapper around a Node binary.
 
 ## Install
 
-Once published:
-
 ```bash
 pip install masterytrace-cli
 ```
@@ -43,8 +36,7 @@ or with [uv](https://docs.astral.sh/uv/):
 uv add masterytrace-cli
 ```
 
-Until then, install from source (this checkout builds and installs
-identically to how the PyPI package will):
+To install from source instead (e.g. for local development):
 
 ```bash
 git clone https://github.com/RudrenduPaul/MasteryTrace.git
@@ -59,12 +51,10 @@ are both plain scalar/list arithmetic, exactly what the TypeScript
 original does with `Float64Array` and plain numbers, so a numpy/scipy
 dependency would not simplify anything here.
 
-**Honest note on the npm side:** the complementary JS/TS distribution
-(`masterytrace-cli` on npm) is not yet published -- that is a deliberate,
-unrelated decision by the maintainer, not a reflection of the npm
-package's readiness (it passes CI and has a working `dist/` build). This
-PyPI package is independent of that decision and installs and runs on its
-own.
+**npm side:** the complementary JS/TS distribution (`masterytrace-cli` on
+npm) is also published -- `npm install -g masterytrace-cli`. This PyPI
+package is an independent port and installs and runs on its own either
+way.
 
 ## Quickstart
 

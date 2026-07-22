@@ -12,15 +12,13 @@ implicitly trusts.
 
 | Package | Version | Supported |
 | --- | --- | --- |
-| `masterytrace-cli` (npm) | not yet published | N/A |
+| `masterytrace-cli` (npm) | 0.1.x | Yes |
 | `masterytrace-cli` (PyPI) | 0.1.x | Yes |
 
-The Python distribution is pre-1.0 and under active development.
-Security fixes land on the latest `0.1.x` release; there is no older
-supported line to backport to yet. The npm distribution is not currently
-published to the npm registry (a deliberate maintainer decision, not a
-readiness gap in the TypeScript source itself), so it has no installable
-version to track here yet.
+Both distributions are pre-1.0 and under active development. Security
+fixes land on the latest `0.1.x` release of each; there is no older
+supported line to backport to yet. Install with `npm install -g
+masterytrace-cli` or `pip install masterytrace-cli`.
 
 ## What this project actually does with event-log data
 

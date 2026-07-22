@@ -9,28 +9,18 @@ Python). Pick whichever fits your toolchain.
 
 ## Install
 
-**pip (Python CLI + library):** publishing as `masterytrace-cli` on PyPI
-is in progress (the first attempt hit PyPI's account-level new-project
-rate limit, a platform-side throttle unrelated to this code). Once live:
+**pip (Python CLI + library):** published as `masterytrace-cli` on PyPI:
 
 ```bash
 pip install masterytrace-cli
 ```
 
-Until then, install from source:
+**npm (JS/TS CLI + library):** published as `masterytrace-cli` on the
+npm registry:
 
 ```bash
-git clone https://github.com/RudrenduPaul/MasteryTrace.git
-cd MasteryTrace/python
-pip install -e .
+npm install -g masterytrace-cli
 ```
-
-**npm (JS/TS CLI + library):** the npm package is not yet published to
-the npm registry -- that is a deliberate decision by the maintainer,
-unrelated to the code's readiness (the TypeScript source passes CI and
-builds cleanly). Until it is published, clone the repo and run the
-TypeScript CLI from source (`npm install && npm run build && node
-dist/cli/index.js`).
 
 ## Your first run
 

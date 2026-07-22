@@ -1,6 +1,6 @@
 {
   "name": "masterytrace-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mastery Measurement API and CLI: fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates.",
   "keywords": [
     "bkt",

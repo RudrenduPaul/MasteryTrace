@@ -2,9 +2,9 @@
 
 MasteryTrace ships two independently maintained, equally first-class
 distributions of the same mastery-scoring library: an npm package
-(`masterytrace-cli`, TypeScript, repo root -- not yet published to npm,
-see the root README) and a PyPI package (`masterytrace-cli`, Python,
-`python/`). Both implement the same two models (BKT, 2PL IRT) and the
+(`masterytrace-cli`, TypeScript, repo root -- `npm install -g
+masterytrace-cli`) and a PyPI package (`masterytrace-cli`, Python,
+`python/` -- `pip install masterytrace-cli`). Both implement the same two models (BKT, 2PL IRT) and the
 same CLI contract, and are expected to produce the same numbers against
 the same input data. Please read this whole file before opening a PR --
 which section applies depends on which codebase you're touching.

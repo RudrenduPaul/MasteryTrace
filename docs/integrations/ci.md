@@ -5,11 +5,9 @@ learner response events, score them, and hand the report to whatever
 downstream system (dashboard, alerting, another agent) consumes mastery
 data.
 
-**Note**: the `pip install masterytrace-cli` steps below reflect the
-package's PyPI publish target and will work once that publish completes
-(see the root README's install section for current status). Until then,
-replace that step with an install from source
-(`pip install "git+https://github.com/RudrenduPaul/MasteryTrace.git#subdirectory=python"`).
+**Note**: `masterytrace-cli` is published on both PyPI and npm, so the
+`pip install masterytrace-cli` steps below work as written (see the root
+README's install section).
 
 ## GitHub Actions -- Python CLI
 
@@ -46,11 +44,20 @@ wrong report.
 
 ## GitHub Actions -- npm CLI
 
-The npm package is not yet published (see the root README), so there is
-no `npx masterytrace-cli` step to document yet. Once published, the
-equivalent pipeline replaces the three Python-specific steps above with
-`npx masterytrace-cli record/score/report` and drops the `setup-python`
-step in favor of `actions/setup-node`.
+The npm package is published as `masterytrace-cli` (see the root
+README). The equivalent pipeline replaces the three Python-specific
+steps above with `npx masterytrace-cli record/score/report` and drops
+the `setup-python` step in favor of `actions/setup-node`:
+
+```yaml
+- uses: actions/checkout@v4
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+- run: npx masterytrace-cli record data/events.json
+- run: npx masterytrace-cli score --model both
+- run: npx masterytrace-cli report --format json > mastery-report.json
+```
 
 ## Agent-native usage
 

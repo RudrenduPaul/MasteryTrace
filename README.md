@@ -210,7 +210,7 @@ MasteryTrace's own niche is being a CLI and a TypeScript library at once, with n
 
 | Project | Language | License | Type | Install | GitHub stars |
 | --- | --- | --- | --- | --- | --- |
-| **MasteryTrace** | TypeScript/Node + Python | MIT | CLI + library | `pip install -e python/` from source today; PyPI/npm publishing in progress | New |
+| **MasteryTrace** | TypeScript/Node + Python | MIT | CLI + library | `pip install masterytrace-cli` / `npm install -g masterytrace-cli` | New |
 | [pyBKT](https://github.com/CAHLR/pyBKT) | Python (C++ core) | MIT | Library only | `pip install pyBKT` | 268 |
 | [girth](https://github.com/eribean/girth) | Python | MIT | Library only | `pip install girth` | 123 |
 | [py-irt](https://github.com/nd-ball/py-irt) | Python (PyTorch/Pyro) | MIT | CLI + library | `pip install py-irt` | 170 |
@@ -226,7 +226,7 @@ MasteryTrace is an open source TypeScript CLI and library that fits Bayesian Kno
 
 ## FAQ
 
-**Why not just use pyBKT or py-irt?** If you want more BKT variants (forgetting, item-order effects) or GPU-scale IRT fitting, those are good choices, and MasteryTrace's comparison table above says so directly. MasteryTrace's Python package (`pip install masterytrace-cli`) covers the same simple textbook-BKT-plus-grid-search and regularized-2PL-IRT models this repo implements, for a Python-only pipeline; the TypeScript package (once published) additionally covers the case where you want mastery scoring in a Node codebase with no Python runtime at all.
+**Why not just use pyBKT or py-irt?** If you want more BKT variants (forgetting, item-order effects) or GPU-scale IRT fitting, those are good choices, and MasteryTrace's comparison table above says so directly. MasteryTrace's Python package (`pip install masterytrace-cli`) covers the same simple textbook-BKT-plus-grid-search and regularized-2PL-IRT models this repo implements, for a Python-only pipeline; the TypeScript package (`npm install -g masterytrace-cli`) additionally covers the case where you want mastery scoring in a Node codebase with no Python runtime at all.
 
 **Does this need a database?** No. State is two JSON files in a `.masterytrace/` directory next to where you run the CLI (`events.json` and `scores.json`). There's no server and no external dependency to run.
 

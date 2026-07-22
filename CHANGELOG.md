@@ -2,19 +2,16 @@
 
 All notable changes to MasteryTrace are documented in this file. This
 changelog covers both distributions -- the npm package (`masterytrace-cli`,
-JS/TS, not yet published) and the PyPI package (`masterytrace-cli`,
-Python, publish in progress -- see `python/README.md`'s "PyPI status"
-note) -- since they implement the same models and CLI contract; entries
-note which distribution they apply to.
+JS/TS, `npm install -g masterytrace-cli`) and the PyPI package
+(`masterytrace-cli`, Python, `pip install masterytrace-cli`) -- since they
+implement the same models and CLI contract; entries note which
+distribution they apply to.
 
 ## [Python 0.1.0] - 2026-07-17
 
 Initial release of the Python port, built, tested (75 pytest tests), and
-verified end to end from a real wheel install. Publishing it to PyPI as
-`masterytrace-cli` is in progress: the first publish attempt hit PyPI's
-account-level new-project rate limit (`429 Too many new projects
-created`), a platform-side anti-abuse throttle unrelated to this code;
-`pip install masterytrace-cli` will work once that clears. A genuine,
+verified end to end from a real wheel install. Published to PyPI as
+`masterytrace-cli`: `pip install masterytrace-cli`. A genuine,
 independent port of the npm package's TypeScript source -- same BKT
 forward-recursion and grid-search fitting, same 2PL IRT joint
 gradient-ascent fit with gauge-fixing, same CLI command/flag/exit-code
@@ -53,9 +50,9 @@ contract. See `python/README.md` for Python-specific usage.
 
 ## [0.1.0] - 2026-07-15 (TypeScript)
 
-Initial release of the TypeScript CLI and library (not yet published to
-npm; see the root README's install section for the maintainer's stated
-reason). `masterytrace <init|record|score|report>` CLI plus a
+Initial release of the TypeScript CLI and library, published to npm as
+`masterytrace-cli` (`npm install -g masterytrace-cli`).
+`masterytrace <init|record|score|report>` CLI plus a
 programmatic `runScoring`/`BktModel`/`IrtModel` library export, backed by
 a full vitest suite including the same hand-computed BKT worked example
 and synthetic IRT recovery check the Python port's suite mirrors.

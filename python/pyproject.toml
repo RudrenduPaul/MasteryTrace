@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "masterytrace-cli"
-version = "0.1.2"
-description = "Mastery Measurement API and CLI: fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates."
+version = "0.1.3"
+description = "Mastery Measurement API and CLI (Python): fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates. Also published to npm as an independent TypeScript port."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
@@ -13,7 +13,7 @@ authors = [
   { name = "Rudrendu Paul" },
   { name = "Sourav Nandy" },
 ]
-keywords = ["bkt", "irt", "bayesian-knowledge-tracing", "item-response-theory", "education", "edtech", "learning-analytics", "psychometrics", "cli", "agent-native"]
+keywords = ["bkt", "irt", "bayesian-knowledge-tracing", "item-response-theory", "education", "edtech", "learning-analytics", "psychometrics", "cli", "agent-native", "python", "adaptive-learning", "mastery-learning"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

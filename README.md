@@ -5,23 +5,14 @@
 MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
 
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
+[![PyPI version](https://img.shields.io/pypi/v/masterytrace-cli.svg)](https://pypi.org/project/masterytrace-cli/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
+![Terminal recording: installing the masterytrace-cli npm tarball, then running init, record, score, and report end to end](./docs/demo.gif)
+
 </div>
-
-## Table of Contents
-
-- [Install](#install)
-- [Quickstart](#quickstart)
-- [CLI command reference](#cli-command-reference)
-- [Library API reference](#library-api-reference)
-- [How BKT and IRT work](#how-bkt-and-irt-work)
-- [Benchmark](#benchmark)
-- [Comparison](#comparison)
-- [FAQ](#faq)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Install
 
@@ -47,15 +38,34 @@ pip install masterytrace-cli
 
 This installs the same four subcommands (`init`, `record`, `score`,
 `report`) as a `masterytrace` console script, plus an importable
-`masterytrace` library -- a genuine, independent port of this repo's
+`masterytrace` library, a genuine, independent port of this repo's
 TypeScript source, not a wrapper around the Node binary. See
 [python/README.md](./python/README.md) for Python-specific usage,
 including a documented `camelCase`/`snake_case` naming divergence
 between the two distributions' JSON output.
 
-## Quickstart
+## Table of Contents
 
-![Terminal recording: installing the masterytrace-cli npm tarball, then running init, record, score, and report end to end](./docs/demo.gif)
+- [Features](#features)
+- [Quickstart](#quickstart)
+- [CLI command reference](#cli-command-reference)
+- [Library API reference](#library-api-reference)
+- [How BKT and IRT work](#how-bkt-and-irt-work)
+- [Benchmark](#benchmark)
+- [Comparison](#comparison)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- **Two named psychometric models, not a black-box score.** Bayesian Knowledge Tracing outputs a posterior mastery probability per learner per skill; 2-parameter logistic IRT outputs a continuous ability estimate (`theta`) per learner and item difficulty/discrimination per skill. Run either or both with `--model bkt|irt|both`.
+- **Two independent, numerically matching distributions.** The npm package (`masterytrace-cli`, TypeScript) and the PyPI package (`masterytrace-cli`, Python) are a real line-for-line port of each other, not a Python wrapper around the Node binary; this audit ran the same 58-event sample through both and got identical mastery scores.
+- **Agent-parseable by default.** Every command accepts a global `--json` flag, `report` also takes `--format markdown`, and there's a real three-value exit code contract (`0` success, `1` usage error, `2` bad event data) instead of a single generic failure code.
+- **162 tests, 100% statement/line/function coverage.** 87 TypeScript tests plus 75 Python tests, including a synthetic-data IRT recovery check that fits 4,000 responses with known ground-truth parameters and lands within 0.2 of the true `theta`, item difficulty, and item discrimination.
+- **No server, no database.** State is two JSON files in a `.masterytrace/` directory next to where you run the CLI. Scoring 100,000 events takes under a second on a single core.
+
+## Quickstart
 
 ```bash
 masterytrace init
@@ -211,10 +221,10 @@ MasteryTrace's own niche is being a CLI and a TypeScript library at once, with n
 | Project | Language | License | Type | Install | GitHub stars |
 | --- | --- | --- | --- | --- | --- |
 | **MasteryTrace** | TypeScript/Node + Python | MIT | CLI + library | `pip install masterytrace-cli` / `npm install -g masterytrace-cli` | New |
-| [pyBKT](https://github.com/CAHLR/pyBKT) | Python (C++ core) | MIT | Library only | `pip install pyBKT` | 268 |
-| [girth](https://github.com/eribean/girth) | Python | MIT | Library only | `pip install girth` | 123 |
+| [pyBKT](https://github.com/CAHLR/pyBKT) | Python (C++ core) | MIT | Library only | `pip install pyBKT` | 272 |
+| [girth](https://github.com/eribean/girth) | Python | MIT | Library only | `pip install girth` | 124 |
 | [py-irt](https://github.com/nd-ball/py-irt) | Python (PyTorch/Pyro) | MIT | CLI + library | `pip install py-irt` | 170 |
-| [DeepTutor](https://github.com/HKUDS/DeepTutor) | Python + TypeScript | Apache-2.0 | Full tutoring application | `pip install -U deeptutor` | 26,000+ |
+| [DeepTutor](https://github.com/HKUDS/DeepTutor) | Python + TypeScript | Apache-2.0 | Full tutoring application | `pip install -U deeptutor` | 32,000+ |
 
 pyBKT (from UC Berkeley's CAHLR lab) is the most established BKT implementation and supports more BKT variants (forgetting, item-order effects) than MasteryTrace's single textbook-plus-grid-search model. girth and py-irt are both IRT libraries; py-irt is the heavier of the two, built on PyTorch and Pyro for GPU-accelerated fitting of larger IRT models (1PL/2PL/4PL) and ships its own CLI, while girth is a lighter pure-Python option closer in spirit to MasteryTrace's regularized-gradient-ascent 2PL implementation. None of the three is a Node.js package or ships a general-purpose CLI in the same shape as `masterytrace score`/`report`.
 
@@ -240,7 +250,7 @@ MasteryTrace is an open source TypeScript CLI and library that fits Bayesian Kno
 
 **What platforms and language runtimes does it support?** The TypeScript CLI/library requires Node.js 18 or later (see `engines.node` in `package.json`) and has no OS-specific code path. The Python port requires Python 3.9 through 3.13 (see the classifiers in `python/pyproject.toml`) and is also declared OS-independent. Neither distribution needs a database or any other runtime dependency.
 
-**How does MasteryTrace compare to pyBKT specifically?** pyBKT (CAHLR/UC Berkeley, 268 GitHub stars at last check) is the more mature BKT implementation: it has a compiled C++ fitting core and supports BKT variants MasteryTrace does not, such as forgetting and item-order effects. MasteryTrace's BKT is the single textbook four-parameter model plus an optional grid-search fit, deliberately simpler. The difference that matters for choosing between them: pyBKT is Python-only, MasteryTrace ships as a Node/TypeScript package too and exposes both models behind one CLI (`masterytrace score --model bkt|irt|both`) instead of a BKT-only library.
+**How does MasteryTrace compare to pyBKT specifically?** pyBKT (CAHLR/UC Berkeley, 272 GitHub stars at last check) is the more mature BKT implementation: it has a compiled C++ fitting core and supports BKT variants MasteryTrace does not, such as forgetting and item-order effects. MasteryTrace's BKT is the single textbook four-parameter model plus an optional grid-search fit, deliberately simpler. The difference that matters for choosing between them: pyBKT is Python-only, MasteryTrace ships as a Node/TypeScript package too and exposes both models behind one CLI (`masterytrace score --model bkt|irt|both`) instead of a BKT-only library.
 
 **Is there an npm package?** Yes, `npm install -g masterytrace-cli` is live on the npm registry. It ships the same four subcommands (`init`, `record`, `score`, `report`) as the Python port, built from the same TypeScript source that passes CI.
 

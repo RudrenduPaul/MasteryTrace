@@ -2,30 +2,19 @@
 
 # MasteryTrace
 
-MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
-
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
 [![PyPI version](https://img.shields.io/pypi/v/masterytrace-cli.svg)](https://pypi.org/project/masterytrace-cli/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
+[Install](#install) • [Quickstart](#quickstart) • [CLI Reference](#cli-command-reference) • [Comparison](#comparison) • [FAQ](#faq)
+
+MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
+
 ![Terminal recording: installing the masterytrace-cli npm tarball, then running init, record, score, and report end to end](./docs/demo.gif)
 
 </div>
-
-## Table of Contents
-
-- [Install](#install)
-- [Quickstart](#quickstart)
-- [CLI command reference](#cli-command-reference)
-- [Library API reference](#library-api-reference)
-- [How BKT and IRT work](#how-bkt-and-irt-work)
-- [Benchmark](#benchmark)
-- [Comparison](#comparison)
-- [FAQ](#faq)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Install
 
@@ -53,9 +42,10 @@ This installs the same four subcommands (`init`, `record`, `score`,
 `report`) as a `masterytrace` console script, plus an importable
 `masterytrace` library -- a genuine, independent port of this repo's
 TypeScript source, not a wrapper around the Node binary. See
-[python/README.md](./python/README.md) for Python-specific usage,
-including a documented `camelCase`/`snake_case` naming divergence
-between the two distributions' JSON output.
+[python/README.md](./python/README.md) for Python-specific usage.
+
+> [!NOTE]
+> The npm and pip distributions return equivalent data but with different JSON key casing (`camelCase` from the TypeScript CLI, `snake_case` from the Python CLI). Account for this if you parse output from both in the same pipeline.
 
 ## Quickstart
 
@@ -91,6 +81,9 @@ learner-brook  fractions              bkt    posterior_mastery_probability  0.06
 learner-cyrus  reading-comprehension  bkt    posterior_mastery_probability  0.9947   7
 ...
 ```
+
+> [!WARNING]
+> `masterytrace record` always replaces the entire previously stored event log; there is no append mode. If you need to add new responses without losing existing ones, merge them into one file and re-run `record` with the full, combined log.
 
 `report` also takes `--format markdown` or `--format json`, and every command accepts a global `--json` flag for machine-readable output on stdout, with a real exit code contract (`0` success, `1` general/usage error, `2` bad event data) so a script or agent invoking this CLI can branch on the result without parsing text.
 

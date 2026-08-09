@@ -6,6 +6,8 @@ logs and reports per-learner, per-skill mastery estimates.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RudrenduPaul/MasteryTrace/blob/main/LICENSE)
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/masterytrace-cli.svg)](https://pypi.org/project/masterytrace-cli/)
+[![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
 
 **PyPI status**: `masterytrace-cli` is published and live on PyPI --
 `pip install masterytrace-cli` works today.

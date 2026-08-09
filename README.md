@@ -5,6 +5,8 @@
 MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
 
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
+[![PyPI version](https://img.shields.io/pypi/v/masterytrace-cli.svg)](https://pypi.org/project/masterytrace-cli/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 

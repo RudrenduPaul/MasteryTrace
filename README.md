@@ -181,6 +181,8 @@ P(know)_next = P(know | obs) + (1 - P(know | obs)) * pTransit
 
 MasteryTrace runs this recursion per learner per skill, in chronological order, and reports the final posterior as that learner's mastery probability for that skill. If you set `"bkt": { "fit": true }` in `masterytrace.config.json`, each skill's four parameters are fit from your own data by a coarse grid search (7 x 7 x 5 x 5 candidate combinations) that minimizes squared error between predicted and observed correctness, instead of using the textbook defaults (`pInit=0.4, pTransit=0.3, pSlip=0.1, pGuess=0.2`).
 
+![Terminal recording: enabling bkt.fit in masterytrace.config.json, then scoring so each skill's BKT parameters are fit from real data via grid search instead of the textbook defaults](./docs/bkt-fit-demo.gif)
+
 ### Item Response Theory (2PL IRT)
 
 IRT models one continuous learner ability (`theta`) per learner and two parameters per skill treated as an "item": discrimination (`a`, how sharply the item separates high- and low-ability learners) and difficulty (`b`). The probability of a correct response under the 2-parameter logistic model is:

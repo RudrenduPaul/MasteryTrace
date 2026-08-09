@@ -10,6 +10,8 @@ MasteryTrace is a TypeScript CLI and library that turns a log of learner respons
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
+![Terminal recording: installing the masterytrace-cli npm tarball, then running init, record, score, and report end to end](./docs/demo.gif)
+
 </div>
 
 ## Table of Contents
@@ -56,8 +58,6 @@ including a documented `camelCase`/`snake_case` naming divergence
 between the two distributions' JSON output.
 
 ## Quickstart
-
-![Terminal recording: installing the masterytrace-cli npm tarball, then running init, record, score, and report end to end](./docs/demo.gif)
 
 ```bash
 masterytrace init

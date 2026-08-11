@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.RudrenduPaul/masterytrace -->
+
 <div align="center">
 
 # MasteryTrace
@@ -103,6 +105,30 @@ Global option: `--json` forces machine-readable JSON on stdout for any command, 
 Exit codes: `0` success, `1` general or usage error (bad flag, missing file), `2` validation error (the event log itself is malformed).
 
 ![Terminal recording: masterytrace report in markdown and JSON format, then the global --json flag on score for machine-readable output](./docs/usage.gif)
+
+## MCP Server
+
+MasteryTrace ships a Model Context Protocol (MCP) server, so an agent (Claude Desktop, Claude Code, or any other MCP client) can invoke the CLI directly instead of shelling out itself.
+
+Install the Python package with the `mcp` extra:
+
+```bash
+pip install "masterytrace-cli[mcp]"
+```
+
+Then point an MCP client at the `masterytrace-mcp` console script. Claude Desktop config example (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "masterytrace": {
+      "command": "masterytrace-mcp"
+    }
+  }
+}
+```
+
+The server exposes a single tool, `run(args: list[str]) -> dict`, which shells out to the installed `masterytrace` CLI with the given argument list and returns its parsed output -- any subcommand or flag the CLI supports is reachable through it. Example call: `run(["score", "--model", "bkt", "--json"])` fits a BKT model against the stored event log and returns the parsed JSON mastery report.
 
 ## Library API reference
 

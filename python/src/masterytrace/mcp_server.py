@@ -59,10 +59,60 @@ def _resolve_cli_help() -> str:
 
 
 _TOOL_DESCRIPTION = (
-    'Run the masterytrace CLI with the given argv list (e.g. '
-    '["score", "--model", "bkt"]) and return its result. Equivalent to '
-    "running `masterytrace <args...>` in a shell; stdout is parsed as "
-    "JSON when possible.\n\n" + _resolve_cli_help()
+    "Invoke the installed `masterytrace` CLI (Bayesian Knowledge Tracing "
+    "and 2-parameter-logistic Item Response Theory mastery scoring for "
+    "learner response-event logs) with a raw argv list, and return its "
+    "parsed result, so an agent can scaffold, record, score, and report "
+    "on mastery data without a separate shell step.\n\n"
+    "Call this to turn a log of learner response events (learnerId, "
+    "skillId, correct, timestamp) into per-learner, per-skill mastery "
+    "estimates, or to inspect scores already computed in the current "
+    "working directory. Typical order: `init` in a fresh directory to "
+    "scaffold a sample events.json and config, `record` to load a real "
+    "JSON or CSV event log, `score` to fit BKT and/or IRT against the "
+    "stored log, `report` to read the fitted scores back out. Do not "
+    "call `record` if you need to preserve a prior event log: it always "
+    "replaces `.masterytrace/events.json` wholesale, there is no append "
+    "mode, so merge old and new events yourself before calling it. No "
+    "API keys or network access are required.\n\n"
+    "Every call runs a real local subprocess against the `masterytrace` "
+    "binary on PATH with a 60-second timeout, so results are "
+    "synchronous. `init`, `record`, and `score` write JSON files under "
+    "a `.masterytrace/` directory relative to the process's current "
+    "working directory; `report`, `--version`, and `--help` are "
+    "read-only. There is no network access at any point. `init` is "
+    "idempotent by default (skips files that already exist) unless "
+    "`--force` is passed, which overwrites them; `record` and `score` "
+    "are not idempotent in that sense, each run fully replaces the "
+    "previous stored file. On failure (binary not found, non-zero "
+    "exit, or a timeout) this tool never raises: it returns an "
+    '`{"error": ...}` dict, usually with the raw `stdout`/`stderr` '
+    "attached for diagnosis. The underlying CLI's own exit codes are 0 "
+    "success, 1 general/usage error (bad flag, missing file), 2 "
+    "event-log validation error.\n\n"
+    "`args` is a list[str] of raw argv tokens appended after the "
+    "`masterytrace` binary, exactly as you would type them on a "
+    "command line split into tokens (no shell quoting). Real examples: "
+    '["init", "--force"] scaffolds or overwrites a sample event log '
+    'and config in the cwd; ["record", "events.json"] validates and '
+    'loads a JSON or CSV event log; ["score", "--model", "bkt", '
+    '"--json"] fits only the BKT model against the stored log and '
+    'forces machine-readable JSON; ["report", "--format", "json"] '
+    "reads the fitted scores back as structured JSON instead of the "
+    'default table. Pass ["--help"] or ["<subcommand>", "--help"] as '
+    "args to fetch the CLI's own live help text for anything not "
+    "covered here.\n\n"
+    "The return value is always a dict. On success with parseable JSON "
+    'stdout it is {"result": <parsed JSON>}; for `score --json` that '
+    'JSON is {"model", "eventCount", "storedAt"}, and for `report '
+    "--format json` it is {\"generated_at\", \"reports\": [{\"model\": "
+    '"bkt"|"irt", "learners": [{"learner_id", "skills": [{"skill_id", '
+    '"metric", "value", "response_count", "details"}]}], "meta"}]}. '
+    "When stdout is not valid JSON (e.g. the default human-readable "
+    'table from `report`, or `init`\'s status lines) the dict is '
+    '{"stdout": ..., "stderr": ...} instead.\n\n'
+    "Full live `masterytrace --help` output at import time:\n\n"
+    + _resolve_cli_help()
 )
 
 mcp = MCPServer("masterytrace")

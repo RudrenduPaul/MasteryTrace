@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.RudrenduPaul/masterytrace -->
+
 # masterytrace-cli (Python)
 
 Mastery Measurement API and CLI: fits Bayesian Knowledge Tracing (BKT) and
@@ -6,6 +8,8 @@ logs and reports per-learner, per-skill mastery estimates.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RudrenduPaul/MasteryTrace/blob/main/LICENSE)
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/masterytrace-cli.svg)](https://pypi.org/project/masterytrace-cli/)
+[![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
 
 **PyPI status**: `masterytrace-cli` is published and live on PyPI --
 `pip install masterytrace-cli` works today.
@@ -121,6 +125,34 @@ command, overriding `--format` on `report`.
 
 Exit codes: `0` success, `1` general or usage error (bad flag, missing
 file), `2` validation error (the event log itself is malformed).
+
+## MCP Server
+
+This package ships a Model Context Protocol (MCP) server, so an agent
+(Claude Desktop, Claude Code, or any other MCP client) can invoke the CLI
+directly instead of shelling out itself.
+
+```bash
+pip install "masterytrace-cli[mcp]"
+```
+
+Claude Desktop config example (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "masterytrace": {
+      "command": "masterytrace-mcp"
+    }
+  }
+}
+```
+
+The server exposes one tool, `run(args: list[str]) -> dict`, which shells
+out to the installed `masterytrace` CLI with the given argument list and
+returns its parsed output. Example call:
+`run(["score", "--model", "bkt", "--json"])` fits a BKT model against the
+stored event log and returns the parsed JSON mastery report.
 
 ## Library API
 

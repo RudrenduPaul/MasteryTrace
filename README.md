@@ -1,8 +1,8 @@
+<!-- mcp-name: io.github.RudrenduPaul/masterytrace -->
+
 <div align="center">
 
 # MasteryTrace
-
-MasteryTrace is a TypeScript CLI and library that turns a log of learner response events into per-learner, per-skill mastery scores, using Bayesian Knowledge Tracing (BKT) and Item Response Theory (IRT), instead of a raw percent-correct.
 
 [![CI](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/RudrenduPaul/MasteryTrace/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/masterytrace-cli.svg)](https://www.npmjs.com/package/masterytrace-cli)
@@ -40,9 +40,10 @@ This installs the same four subcommands (`init`, `record`, `score`,
 `report`) as a `masterytrace` console script, plus an importable
 `masterytrace` library, a genuine, independent port of this repo's
 TypeScript source, not a wrapper around the Node binary. See
-[python/README.md](./python/README.md) for Python-specific usage,
-including a documented `camelCase`/`snake_case` naming divergence
-between the two distributions' JSON output.
+[python/README.md](./python/README.md) for Python-specific usage.
+
+> [!NOTE]
+> The npm and pip distributions return equivalent data but with different JSON key casing (`camelCase` from the TypeScript CLI, `snake_case` from the Python CLI). Account for this if you parse output from both in the same pipeline.
 
 ## Table of Contents
 
@@ -100,6 +101,9 @@ learner-cyrus  reading-comprehension  bkt    posterior_mastery_probability  0.99
 ...
 ```
 
+> [!WARNING]
+> `masterytrace record` always replaces the entire previously stored event log; there is no append mode. If you need to add new responses without losing existing ones, merge them into one file and re-run `record` with the full, combined log.
+
 `report` also takes `--format markdown` or `--format json`, and every command accepts a global `--json` flag for machine-readable output on stdout, with a real exit code contract (`0` success, `1` general/usage error, `2` bad event data) so a script or agent invoking this CLI can branch on the result without parsing text.
 
 Your own event log is a JSON array of `{ learnerId, skillId, correct, timestamp }` objects, or a CSV with header `learner_id,skill_id,correct,timestamp`. `timestamp` must be ISO 8601; `correct` is a boolean (JSON) or `true`/`false`/`1`/`0` (CSV), and any other value in a CSV `correct` cell is rejected as a validation error rather than silently treated as false. Event log files over 100 MB are rejected up front with a clear error; event logs are small structured records and have no legitimate reason to approach that size.
@@ -118,6 +122,30 @@ Global option: `--json` forces machine-readable JSON on stdout for any command, 
 Exit codes: `0` success, `1` general or usage error (bad flag, missing file), `2` validation error (the event log itself is malformed).
 
 ![Terminal recording: masterytrace report in markdown and JSON format, then the global --json flag on score for machine-readable output](./docs/usage.gif)
+
+## MCP Server
+
+MasteryTrace ships a Model Context Protocol (MCP) server, so an agent (Claude Desktop, Claude Code, or any other MCP client) can invoke the CLI directly instead of shelling out itself.
+
+Install the Python package with the `mcp` extra:
+
+```bash
+pip install "masterytrace-cli[mcp]"
+```
+
+Then point an MCP client at the `masterytrace-mcp` console script. Claude Desktop config example (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "masterytrace": {
+      "command": "masterytrace-mcp"
+    }
+  }
+}
+```
+
+The server exposes a single tool, `run(args: list[str]) -> dict`, which shells out to the installed `masterytrace` CLI with the given argument list and returns its parsed output -- any subcommand or flag the CLI supports is reachable through it. Example call: `run(["score", "--model", "bkt", "--json"])` fits a BKT model against the stored event log and returns the parsed JSON mastery report.
 
 ## Library API reference
 
@@ -188,6 +216,8 @@ P(know)_next = P(know | obs) + (1 - P(know | obs)) * pTransit
 ```
 
 MasteryTrace runs this recursion per learner per skill, in chronological order, and reports the final posterior as that learner's mastery probability for that skill. If you set `"bkt": { "fit": true }` in `masterytrace.config.json`, each skill's four parameters are fit from your own data by a coarse grid search (7 x 7 x 5 x 5 candidate combinations) that minimizes squared error between predicted and observed correctness, instead of using the textbook defaults (`pInit=0.4, pTransit=0.3, pSlip=0.1, pGuess=0.2`).
+
+![Terminal recording: enabling bkt.fit in masterytrace.config.json, then scoring so each skill's BKT parameters are fit from real data via grid search instead of the textbook defaults](./docs/bkt-fit-demo.gif)
 
 ### Item Response Theory (2PL IRT)
 

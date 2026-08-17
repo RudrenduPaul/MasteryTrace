@@ -1,7 +1,7 @@
 {
   "name": "masterytrace-cli",
-  "version": "0.1.1",
-  "description": "Mastery Measurement API and CLI: fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates.",
+  "version": "0.1.2",
+  "description": "Mastery Measurement API and CLI (TypeScript): fits Bayesian Knowledge Tracing (BKT) and Item Response Theory (2PL IRT) models to learner response logs and reports per-learner, per-skill mastery estimates. Also published to PyPI as an independent Python port.",
   "keywords": [
     "bkt",
     "irt",
@@ -12,7 +12,10 @@
     "learning-analytics",
     "psychometrics",
     "cli",
-    "agent-native"
+    "agent-native",
+    "typescript",
+    "adaptive-learning",
+    "mastery-learning"
   ],
   "homepage": "https://github.com/RudrenduPaul/MasteryTrace#readme",
   "bugs": {
@@ -65,7 +68,7 @@
   },
   "overrides": {
     "brace-expansion": "5.0.9",
-    "nanoid": "3.3.17",
+    "nanoid": "3.3.18",
     "postcss": "8.5.26"
   }
 }

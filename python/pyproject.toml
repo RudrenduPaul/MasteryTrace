@@ -13,7 +13,7 @@ authors = [
   { name = "Rudrendu Paul" },
   { name = "Sourav Nandy" },
 ]
-keywords = ["bkt", "irt", "bayesian-knowledge-tracing", "item-response-theory", "education", "edtech", "learning-analytics", "psychometrics", "cli", "agent-native"]
+keywords = ["bkt", "irt", "bayesian-knowledge-tracing", "item-response-theory", "education", "edtech", "learning-analytics", "psychometrics", "cli", "agent-native", "python", "adaptive-learning", "mastery-learning"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

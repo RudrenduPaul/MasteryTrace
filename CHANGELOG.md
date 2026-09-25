@@ -17,6 +17,7 @@ Applies to the npm package only.
 - Development dependencies upgraded (TypeScript 6, ESLint 10.11,
   typescript-eslint 8.70, vitest 4.1.11, `@types/node` 26.6).
 - Support floor unchanged (Node.js 18 or newer).
+- Runtime dependency `commander` pinned to `^13.1.0` (was `^15.0.0`, which requires Node.js 22.12 or newer); commander 13 supports Node.js 18, matching the declared floor.
 - npm publishing moves to npm Trusted Publishing (GitHub Actions OIDC,
   no long-lived token) via `.github/workflows/publish-npm.yml`.
 

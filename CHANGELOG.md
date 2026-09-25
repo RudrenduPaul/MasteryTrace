@@ -7,6 +7,19 @@ JS/TS, `npm install -g masterytrace-cli`) and the PyPI package
 implement the same models and CLI contract; entries note which
 distribution they apply to.
 
+## [0.1.3] - 2026-09-24 (TypeScript)
+
+Applies to the npm package only.
+
+### Changed
+
+- Runtime dependency `zod` range raised from `^4.4.3` to `^4.6.5`.
+- Development dependencies upgraded (TypeScript 6, ESLint 10.11,
+  typescript-eslint 8.70, vitest 4.1.11, `@types/node` 26.6).
+- Support floor unchanged (Node.js 18 or newer).
+- npm publishing moves to npm Trusted Publishing (GitHub Actions OIDC,
+  no long-lived token) via `.github/workflows/publish-npm.yml`.
+
 ## [Python 0.1.0] - 2026-07-17
 
 Initial release of the Python port, built, tested (75 pytest tests), and
